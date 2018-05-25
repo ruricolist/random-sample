@@ -46,3 +46,9 @@
       (is-true (every (op (find _ pop)) sample))
       (is-true (length= sample sample-size))
       (is-true (length= sample (nub sample))))))
+
+(test large-range
+  "Test that we can generate indices for ranges than double floats can
+represent."
+  (finishes
+    (generate-index-array 50 (expt 2 128))))
