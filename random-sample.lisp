@@ -3,9 +3,6 @@
 (in-package #:random-sample)
 (in-readtable case-inverting-readtable)
 
-(deftype index-array ()
-  '(simple-array array-index (*)))
-
 (defsubst uniformrv ()
   (nlet rec ()
     (let ((v (random 1d0)))
@@ -145,22 +142,15 @@ ascending order, calling FN on each index as it is generated."
                 (funcall fn (1- index)))
               n len)))))
 
-(-> make-index-array (array-length) index-array)
-(defun make-index-array (n)
-  (make-array n :element-type 'array-index))
-
-(-> generate-index-array/replacement
-    (array-length array-length) index-array)
 (defun generate-index-array/replacement (n len)
-  (loop with index-array = (make-index-array n)
+  (loop with index-array = (make-array n)
         for i from 0 below n
         do (setf (aref index-array i) (random len))
         finally (return (sort index-array #'<))))
 
-(-> generate-index-array (array-length array-length) index-array)
 (defun generate-index-array (n len)
   (lret ((i 0)
-         (a (make-index-array n)))
+         (a (make-array n)))
     (declare (array-index i))
     (map-random-below (op (setf (aref a (finc i)) _))
                       n len)))
