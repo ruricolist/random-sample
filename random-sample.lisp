@@ -8,10 +8,10 @@
 
 (defsubst uniformrv ()
   (nlet rec ()
-        (let ((v (random 1d0)))
-          (if (zerop v)
-              (rec)
-              v))))
+    (let ((v (random 1d0)))
+      (if (zerop v)
+          (rec)
+          v))))
 
 (defun vitter-method-a (fn n N)
   "Vitter's Method A.
@@ -29,17 +29,17 @@ features like exponents and subtraction."
     (declare (type double-float V quot Nreal top))
     (declare (type integer N S))
     (loop while (>= n 2) do
-          (setf V (uniformrv)
-                S 0
-                quot ($ top / Nreal))
-          (loop while (> quot V) do
-                (incf S)
-                (decf top)
-                (decf Nreal)
-                (setf quot ($ (quot * top) / Nreal)))
-          (funcall fn (1+ S))
-          (decf Nreal)
-          (decf n))
+      (setf V (uniformrv)
+            S 0
+            quot ($ top / Nreal))
+      (loop while (> quot V) do
+        (incf S)
+        (decf top)
+        (decf Nreal)
+        (setf quot ($ (quot * top) / Nreal)))
+      (funcall fn (1+ S))
+      (decf Nreal)
+      (decf n))
     ;; Special case: n = 1.
     (setf S (truncate ($ (round Nreal) * (uniformrv))))
     (funcall fn (1+ S))))
@@ -78,52 +78,52 @@ features like exponents and subtraction."
                    negSreal qu1real))
     (declare (type integer S n N))
     (loop while (and (> n 1) (< threshold N)) do
-          (setf nmin1inv (/ (1- nreal)))
-          (loop
-             ;; Step D2: generate U and X.
-             (loop
-                (setf X ($ Nreal * (-Vprime + 1))
-                      S (truncate X))
-                (when (< S qu1)
-                  (return))
-                (setf Vprime ($ (uniformrv) ^ ninv)))
-             (setf U (uniformrv)
-                   negSreal (* S -1d0))
-             ;; Step D3: accept?
-             (setf y1 ($ (U * Nreal / qu1real) ^ nmin1inv)
-                   Vprime ($ y1 * (-X / Nreal + 1)
-                             * (qu1real / (negSreal + qu1real))))
-             (when (<= Vprime 1)
-               ;; Accept! Test (2.8) is true.
-               (return))
-             ;; Step D4. Accept?
-             (setf y2 1d0
-                   top (1- Nreal))
-             (if (> (1- n) S)
-                 (setf bottom ($ -nreal + Nreal)
-                       limit ($ -S + N))
-                 (setf bottom ($ -1 + negSreal + Nreal)
-                       limit qu1))
-             (loop for i from (1- N) downto limit do
-                   (setf y2 ($ (y2 * top) / bottom))
-                   (decf top)
-                   (decf bottom))
-             (when (>= ($ Nreal / (-X + Nreal))
-                       ($ y1 * (y2 ^ nmin1inv)))
-               ;; Accept!
-               (setf Vprime ($ (uniformrv) ^ nmin1inv))
-               (return))
-             (setf Vprime ($ (uniformrv) ^ ninv)))
-          ;; Step D5: select the (S+1)st record.
-          (funcall fn (1+ S))
-          (setf N ($ -S + (N - 1))
-                Nreal ($ negSreal + (Nreal - 1)))
-          (decf n)
-          (decf nreal)
-          (setf ninv nmin1inv
-                qu1 ($ -S + qu1)
-                qu1real ($ negSreal + qu1real)
-                threshold ($ threshold + negalphainv)))
+      (setf nmin1inv (/ (1- nreal)))
+      (loop
+         ;; Step D2: generate U and X.
+         (loop
+            (setf X ($ Nreal * (-Vprime + 1))
+                  S (truncate X))
+            (when (< S qu1)
+              (return))
+            (setf Vprime ($ (uniformrv) ^ ninv)))
+         (setf U (uniformrv)
+               negSreal (* S -1d0))
+         ;; Step D3: accept?
+         (setf y1 ($ (U * Nreal / qu1real) ^ nmin1inv)
+               Vprime ($ y1 * (-X / Nreal + 1)
+                         * (qu1real / (negSreal + qu1real))))
+         (when (<= Vprime 1)
+           ;; Accept! Test (2.8) is true.
+           (return))
+         ;; Step D4. Accept?
+         (setf y2 1d0
+               top (1- Nreal))
+         (if (> (1- n) S)
+             (setf bottom ($ -nreal + Nreal)
+                   limit ($ -S + N))
+             (setf bottom ($ -1 + negSreal + Nreal)
+                   limit qu1))
+         (loop for i from (1- N) downto limit do
+           (setf y2 ($ (y2 * top) / bottom))
+           (decf top)
+           (decf bottom))
+         (when (>= ($ Nreal / (-X + Nreal))
+                   ($ y1 * (y2 ^ nmin1inv)))
+           ;; Accept!
+           (setf Vprime ($ (uniformrv) ^ nmin1inv))
+           (return))
+         (setf Vprime ($ (uniformrv) ^ ninv)))
+      ;; Step D5: select the (S+1)st record.
+      (funcall fn (1+ S))
+      (setf N ($ -S + (N - 1))
+            Nreal ($ negSreal + (Nreal - 1)))
+      (decf n)
+      (decf nreal)
+      (setf ninv nmin1inv
+            qu1 ($ -S + qu1)
+            qu1real ($ negSreal + qu1real)
+            threshold ($ threshold + negalphainv)))
     (if (> n 1)
         ;; Use Method A.
         (vitter-method-a fn n N)
