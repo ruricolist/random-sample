@@ -7,7 +7,8 @@
   :in-order-to ((asdf:test-op (asdf:test-op "random-sample-tests")))
   :depends-on ("alexandria"
                "serapeum"
-               "infix-math")
+               "infix-math"
+               "named-readtables")
   :serial t
   :components ((:file "package")
                (:file "readtable")
@@ -19,7 +20,5 @@
   :license "MIT"
   :perform (asdf:test-op (o c) (uiop:symbol-call :random-sample-tests :run-tests))
   :pathname "tests/"
-  :depends-on ("serapeum"
-               "fiveam"
-               "random-sample")
+  :depends-on ("fiveam" "random-sample")
   :components ((:file "random-sample-tests")))
