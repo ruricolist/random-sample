@@ -52,3 +52,8 @@
 represent."
   (finishes
     (generate-index-array 50 (expt 2 128))))
+
+(test sample-greater-than-sequence-with-replacement
+  "Test that we can get a sample larger than the sequence as long as
+:with-replacement is t."
+  (is (= 5 (length (random-sample '(a b c d) 5 :with-replacement t)))))

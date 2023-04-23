@@ -149,6 +149,7 @@ ascending order, calling FN on each index as it is generated."
         finally (return (sort index-array #'<))))
 
 (defun generate-index-array (n len)
+  (assert (<= n len))
   (lret ((i 0)
          (a (make-array n)))
     (declare (array-index i))
@@ -173,7 +174,6 @@ replacement (a \"draw\").
 If WITH-REPLACEMENT is false, return a random sample without
 replacement (a \"deal\")."
   (declare (sequence seq) (array-length n))
-  (assert (<= n (length seq)))
   (cond ((= n 0) nil)
         ((= n 1) (list (random-elt seq)))
         (t (let* ((len (length seq))
